@@ -1,39 +1,50 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import {StyleProp, Text, TextStyle} from 'react-native'
+import React from 'react'
+import {Stack} from "expo-router";
+import {useFonts} from "expo-font";
+import {Fonts} from "@/constants/Fonts";
+import AppProvider from "@/context/context";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const RootLayout = () => {
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+    console.log("here")
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+    const [fontsLoaded] = useFonts({
+        "sora": require("@/assets/fonts/Sora-Regular.ttf"),
+        "sora-medium": require("@/assets/fonts/Sora-Medium.ttf"),
+        "sora-semi-bold": require("@/assets/fonts/Sora-SemiBold.ttf"),
+        "merri-weather": require("@/assets/fonts/Merriweather-Regular.ttf"),
+        "merri-weather-bold": require("@/assets/fonts/Merriweather-Bold.ttf"),
+        "poppins": require("@/assets/fonts/Poppins-Regular.ttf"),
+        "poppins-semi-bold": require("@/assets/fonts/Poppins-SemiBold.ttf"),
+        "poppins-bold": require("@/assets/fonts/Poppins-Bold.ttf"),
+        "poppins-extra-bold": require("@/assets/fonts/Poppins-ExtraBold.ttf"),
+    });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+
+    if(!fontsLoaded) {
+        return <Text>Loading</Text>
     }
-  }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+    const headerTitleStyle: StyleProp<Pick<TextStyle, "fontFamily" | "fontSize" | "fontWeight">> = {
+        fontFamily: Fonts.sora,
+        fontSize: 16,
+        fontWeight: "600"
+    }
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    return (
+        <AppProvider>
+            <Stack>
+                <Stack.Screen name="index" options={{headerShown: false}} />
+                <Stack.Screen name="(tabs)" options={{headerShown: false}} />
+                <Stack.Screen name="user/[id]" options={{
+                    headerTitle: "Information",
+                    headerTitleAlign: "center",
+                    headerTitleStyle,
+                }} />
+            </Stack>
+        </AppProvider>
+    )
 }
+
+export default RootLayout;

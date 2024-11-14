@@ -1,45 +1,57 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import React from "react";
+import { router, Tabs } from "expo-router";
+import TabBar from "@/components/TabBar";
+import { Fonts } from "@/constants/Fonts";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { TouchableOpacity, View } from "react-native";
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+const TabLayout = () => {
+  const onPress = () => {
+    router.push({
+      pathname: "/auth/signin",
+    });
+  };
 
   return (
     <Tabs
+      tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        headerRightContainerStyle: {},
+        headerRight: () => (
+          <TouchableOpacity style={{ marginRight: 15 }} onPress={onPress}>
+            <FontAwesome6 name="user-circle" size={22} />
+          </TouchableOpacity>
+        ),
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          headerShown: false,
+          headerTitle: "Home",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontFamily: Fonts.sora,
+            fontSize: 20,
+          },
         }}
       />
+      <Tabs.Screen name="scanner" />
       <Tabs.Screen
-        name="explore"
+        name="history"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          headerShown: true,
+          headerTitle: "History",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontFamily: Fonts.sora,
+            fontSize: 20,
+          },
         }}
       />
     </Tabs>
   );
-}
+};
+
+export default TabLayout;
